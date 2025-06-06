@@ -41,7 +41,11 @@ in
 
       rustup
       wasm-bindgen-cli
+      wayland
+      wayland-protocols
       marksman
+
+      obsidian
 
       # ollama-rocm
     ];
@@ -53,9 +57,4 @@ in
     inherit (config.fishContributions) shellAliases shellInit;
   };
 
-  programs.obsidian = {
-    enable = true;
-    defaultSettings = { };
-    vaults.wlmr.target = "/home/wlmr/Obsidian";
-  };
 }

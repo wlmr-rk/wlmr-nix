@@ -1,7 +1,6 @@
 # /home/wlmr/NixOS/modules/terminal.nix
 { pkgs, lib, config, ... }:
 let
-  # Import developer functions more robustly
   oldDeveloperFishFunctions =
     if builtins.pathExists ./developer.nix then
       let
@@ -11,11 +10,9 @@ let
     else
       { };
 
-  # Fixed clipboard monitoring script
   clipboardMonitorScript = pkgs.writeShellScript "clipboard-monitor" ''
     #!/bin/bash
     
-    # Kill any existing clipboard monitors to prevent duplicates
     pkill -f "wl-paste.*clipboard-monitor" || true
     
     # Store last clipboard content to avoid duplicate notifications
@@ -29,7 +26,6 @@ let
         wl-paste 2>/dev/null | sha256sum | cut -d' ' -f1 2>/dev/null || echo ""
     }
     
-    # Function to show notification with content preview
     show_notification() {
         local content="$1"
         local content_type="$2"
@@ -42,7 +38,6 @@ let
             preview="$content"
         fi
         
-        # Different icons based on content type
         case "$content_type" in
             "image") 
                 notify-send -i "image-x-generic" "📋 Clipboard" "Image copied"
@@ -60,7 +55,7 @@ let
     export -f get_clip_hash
     export -f show_notification
     
-    # Monitor clipboard changes with a more robust approach
+    # Monitor clipboard changes
     wl-paste --watch bash -c '
         # Re-source the functions in this subshell context
         get_clip_hash() {
@@ -117,137 +112,32 @@ let
         fi
     ' &
     
-    # Keep the main script running
     wait
   '';
 
-  # Enhanced Fish functions
   enhancedFishFunctions = oldDeveloperFishFunctions // {
-    # Clipboard utilities
-    clip = "wl-copy";
-    paste = "wl-paste";
 
-    # Directory navigation improvements
-    mkcd = ''
-      function mkcd
-          mkdir -p $argv[1] && cd $argv[1]
-      end
-    '';
-
-    up = ''
-      function up
-          set -l levels $argv[1]
-          if test -z "$levels"
-              set levels 1
-          end
-          set -l path ""
-          for i in (seq $levels)
-              set path "../$path"
-          end
-          cd $path
-      end
-    '';
-
-    # File operations
-    backup = ''
-      function backup
-          cp $argv[1] $argv[1].bak.(date +%Y%m%d_%H%M%S)
-      end
-    '';
-
-    extract = ''
-      function extract
-          switch $argv[1]
-              case "*.tar.bz2"
-                  tar xjf $argv[1]
-              case "*.tar.gz"
-                  tar xzf $argv[1]
-              case "*.bz2"
-                  bunzip2 $argv[1]
-              case "*.rar"
-                  unrar x $argv[1]
-              case "*.gz"
-                  gunzip $argv[1]
-              case "*.tar"
-                  tar xf $argv[1]
-              case "*.tbz2"
-                  tar xjf $argv[1]
-              case "*.tgz"
-                  tar xzf $argv[1]
-              case "*.zip"
-                  unzip $argv[1]
-              case "*.Z"
-                  uncompress $argv[1]
-              case "*.7z"
-                  7z x $argv[1]
-              case "*"
-                  echo "Unknown archive format: $argv[1]"
-          end
-      end
-    '';
-
-    # System monitoring
-    ports = "ss -tuln";
-    processes = "ps aux | head -20";
-    meminfo = "free -h";
-    diskinfo = "df -h";
-
-    # Development utilities
-    serve = "python3 -m http.server 8000";
-    myip = "curl -s https://httpbin.org/ip | jq -r .origin";
-    weather = "curl -s 'wttr.in/?format=3'";
-
-    # NixOS specific improvements
-    nixtest = "sudo nixos-rebuild test --flake ~/NixOS";
-    nixboot = "sudo nixos-rebuild boot --flake ~/NixOS";
     nixclean = "sudo nix-collect-garbage -d && nix-store --optimise";
-    nixsearch = "nix search nixpkgs";
-    nixshell = "nix-shell -p";
   };
 
-  # Improved aliases
   terminalFishAliases = {
-    # Enhanced ls alternatives
     ll = "eza -la --icons --git --header --group-directories-first";
     la = "eza -la --icons --git --header --group-directories-first";
     ls = "eza --icons --group-directories-first";
     lt = "eza --tree --icons --level=2";
     tree = "eza --tree --icons";
-
-    # Better file tools
     cat = "bat --paging=never";
-    less = "bat --paging=always";
-    find = "fd";
     grep = "rg";
-
-    # Config shortcuts (improved)
-    nconf = "nvim ~/NixOS/configuration.nix";
-    nhome = "nvim ~/NixOS/home.nix";
+    nconf = "nvim ~/NixOS/c.nix";
+    nhome = "nvim ~/NixOS/h.nix";
     napp = "nvim ~/NixOS/modules/apps.nix";
     nhypr = "nvim ~/NixOS/modules/hyprland.nix";
     nterm = "nvim ~/NixOS/modules/terminal.nix";
-
-    # Quick navigation
-    ".." = "cd ..";
-    "..." = "cd ../..";
-    "...." = "cd ../../..";
-
-    # Safety nets
     rm = "rm -i";
     cp = "cp -i";
     mv = "mv -i";
-
-    # Network
-    ping = "ping -c 5";
-
-    # Modern alternatives
-    top = "btop";
-    htop = "btop";
-    du = "dust";
-    df = "duf";
   };
 
-  # Enhanced shell initialization
   terminalFishShellInit = ''
     set -gx NODE_NO_WARNINGS 1
     
@@ -262,7 +152,6 @@ let
     set -g fish_history_file ~/.local/share/fish/fish_history
     set -g fish_history_size 10000
     
-    # Initialize tools
     if command -v zoxide >/dev/null
         zoxide init fish | source
     end
@@ -271,7 +160,6 @@ let
         direnv hook fish | source
     end
     
-    # Start clipboard monitor (improved with better process checking)
     if not pgrep -f "clipboard-monitor" >/dev/null 2>&1
         nohup ${clipboardMonitorScript} >/dev/null 2>&1 & disown
     end
@@ -281,24 +169,11 @@ let
         gh completion -s fish | source
     end
     
-    # Custom key bindings
-    bind \cf 'fzf | head -1 | read -l result; and commandline -a "$result"'
-    bind \cr 'history | fzf | read -l result; and commandline -r "$result"'
-    bind \co 'fd --type f | fzf | read -l result; and $EDITOR "$result"'
-    
-    # Functions for session management
-    function last_history_item
-        echo $history[1]
-    end
-    
     # Smart cd with auto-ls
     function cd
         builtin cd $argv
         and ls
     end
-    
-    # Enhanced prompt customization
-    set -g fish_prompt_pwd_dir_length 3
   '';
 
 in
@@ -328,7 +203,6 @@ in
       shellInit = terminalFishShellInit;
     };
 
-    # Enhanced Alacritty configuration
     programs.alacritty = {
       enable = true;
       settings = {
@@ -350,7 +224,7 @@ in
         };
 
         scrolling = {
-          history = 100000; # Increased for better history
+          history = 1000;
           multiplier = 3;
         };
 
@@ -409,16 +283,6 @@ in
             cyan = "#7dcfff";
             white = "#c0caf5";
           };
-          dim = {
-            black = "#32344a";
-            red = "#f7768e";
-            green = "#9ece6a";
-            yellow = "#e0af68";
-            blue = "#7aa2f7";
-            magenta = "#bb9af7";
-            cyan = "#7dcfff";
-            white = "#9aa5ce";
-          };
         };
 
         bell = {
@@ -439,7 +303,6 @@ in
           hide_when_typing = true;
         };
 
-        # Performance optimizations
         debug = {
           render_timer = false;
           persistent_logging = false;
@@ -518,7 +381,6 @@ in
           format = "([+$added]($added_style) )([-$deleted]($deleted_style) )";
         };
 
-        # Command duration
         cmd_duration = {
           disabled = false;
           format = "took [$duration]($style) ";
@@ -526,12 +388,10 @@ in
           min_time = 2000;
         };
 
-        # Fill line
         fill = {
           symbol = " ";
         };
 
-        # Language-specific modules
         nodejs = {
           disabled = false;
           format = "[$symbol($version )]($style)";
@@ -553,7 +413,6 @@ in
           style = "yellow";
         };
 
-        # Disable noisy modules
         aws.disabled = true;
         gcloud.disabled = true;
         kubernetes.disabled = true;
@@ -565,7 +424,6 @@ in
       };
     };
 
-    # Essential packages with modern alternatives
     home.packages = with pkgs; [
       eza # ls replacement
       bat # cat replacement
@@ -580,7 +438,6 @@ in
       wl-clipboard # for wl-copy/wl-paste
     ];
 
-    # Additional services for clipboard monitoring
     systemd.user.services.clipboard-monitor = {
       Unit = {
         Description = "Enhanced clipboard monitor";
