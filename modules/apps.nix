@@ -68,11 +68,12 @@
     gimp
     gnome-clocks
     gnome-calculator
+    anki-bin
   ];
 
   programs.git = {
     enable = true;
-    userEmail = "wlmr.rk@.com";
+    userEmail = "wlmr.rk@gmail.com";
     userName = "wlmr-rk";
   };
 

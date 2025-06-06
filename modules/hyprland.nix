@@ -66,9 +66,9 @@
       };
       exec-once = [
         "waybar & mako & udiskie &"
-        "qbittorrent --no-splash"
+        "qbittorrent --no-splash &"
+        "nohup wl-paste --watch notify-send 'クリップボード' '新しい内容がコピーされました' >/dev/null 2>&1 &"
         "clipse -listen"
-        "fish ~/.config/fish/clipboard_monitor.fish &"
       ];
       input = {
         accel_profile = "flat";
@@ -81,6 +81,7 @@
       bind = [
         ", mouse:275, exec, wtype -M alt -P Right -p alt"
         ", mouse:276, exec, wtype -M alt -P Left -p alt"
+        "SUPER CTRL ALT, P, exec, poweroff"
         "SUPER, Q, exec, alacritty"
         "SUPER SHIFT, Q, exec, nvim"
         "SUPER SHIFT, W, killactive"
@@ -93,7 +94,7 @@
         "SUPER, F, fullscreen"
         "SUPER, Tab, cyclenext"
         # Clipse clipboard manager - SUPER + C - optimized for vertical layout
-        "SUPER, C, exec, alacritty --class=clipse-manager --title='クリップボード履歴' -e fish -c 'clipse'"
+        "SUPER, C, exec, alacritty --class clipse -e 'clipse'"
         # Screenshots
         ''SUPER SHIFT, S, exec, grim -g "$(slurp)" ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png && wl-copy < ~/Pictures/screenshot_$(date +%Y%m%d_%H%M%S).png''
         # Movement
@@ -119,13 +120,13 @@
       # Window rules for productivity and browser popups
       windowrulev2 = [
         # Clipse clipboard manager - optimized vertical layout for clipboard history
-        "float,class:^(clipse-manager)$"
-        "size 700 900,class:^(clipse-manager)$" # Slightly wider and taller for better readability
-        "center,class:^(clipse-manager)$"
-        "stayfocused,class:^(clipse-manager)$"
-        "animation slide,class:^(clipse-manager)$" # Smooth slide animation
-        # === VERIFY THESE CLASS NAMES with `hyprctl clients` ===
-        "float,class:^(org.gnome.clocks)$" # Example: Assumed capitalization
+        "float,class:^(clipse)$"
+        "size 700 900,class:^(clipse)$"
+        "center,class:^(clipse)$"
+        "stayfocused,class:^(clipse)$"
+        "animation slide,class:^(clipse)$"
+
+        "float,class:^(org.gnome.clocks)$"
         "center,class:^(org.gnome.clocks)$"
         "float,class:^(org.gnome.Calculator)$"
         "center,class:^(org.gnome.Calculator)$"
@@ -424,14 +425,12 @@
         font-family: "JetBrains Mono Nerd Font";
       }
       
-      /* Additional TokyoNight styling for better integration */
       #workspaces button.urgent {
         color: #f7768e; /* TokyoNight red */
         background: rgba(247, 118, 142, 0.2);
         border: 1px solid #f7768e;
       }
       
-      /* Subtle accent on hover for all modules */
       #cpu:hover,
       #memory:hover,
       #bluetooth:hover,
@@ -439,7 +438,7 @@
       #network:hover,
       #pulseaudio:hover,
       #clock:hover {
-        border: 1px solid #bb9af7; /* TokyoNight purple accent */
+        border: 1px solid #bb9af7;
         background: rgba(187, 154, 247, 0.05);
       }
     '';
@@ -492,15 +491,14 @@
       '';
     };
   };
-  # Screenshot utilities and clipboard tools - FIXED: Removed conflicting packages
   home.packages = with pkgs; [
     clipse
     grim
     slurp
-    wl-clipboard # Main Wayland clipboard utility
+    wl-clipboard
+    libnotify #allows notify-send
     mako
 
     file
-    libnotify # For notify-send command
   ];
 }

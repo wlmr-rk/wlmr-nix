@@ -1,17 +1,7 @@
 # configuration.nix
 
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 {
-  #  environment.variables = {
-  #    AMD_VULKAN_ICD = "RADV";
-  #    MOZ_DISABLE_RDD = "1";
-  #    MOZ_ACCELERATED = "1";
-  #    MOZ_WEBRENDER = "1";
-  #  };
-  #
-  #  boot.initrd.kernelModules = [ "amdgpu" ];
-  #  boot.kernelModules = [ "amdgpu" ];
-
   imports = [
     <nixos-hardware/common/gpu/amd/default.nix>
     <home-manager/nixos>
@@ -91,17 +81,26 @@
   nixpkgs.config.android_sdk.accept_license = true; # Android Studio
 
   environment.systemPackages = with pkgs; [
-    udisks2
-    udiskie
+    # Development essentials (consolidated)
+    stdenv.cc # Includes clang, gcc, and essential build tools
+    nodejs_latest # Keep for your React/JS work
+    lua-language-server
     neovim
-    libxkbcommon
     git
-    curl
-    pkg-config
-    unzip
-    wget
-    pavucontrol
-    networkmanagerapplet
+    rustlings
+
+    # System utilities (consolidated) 
+    busybox # Replaces: curl, wget, unzip (includes 300+ utilities)
+    pkg-config # Essential for building
+
+    # Hardware/Graphics
+    qt6.qtwayland
+    rocmPackages.clr # OpenCL runtime (includes what clr-icd provides)
+    rocmPackages.rocminfo
+
+    # Desktop environment
+    udisks2 # Auto-mounting (udiskie can be user service)
+    libxkbcommon # Wayland keyboard support
     playerctl
     bibata-cursors
     btop
@@ -132,10 +131,14 @@
   };
 
   home-manager.backupFileExtension = "backup-$(date +%Y%m%d)";
-  environment.variables = {
+  environment.sessionVariables = {
+    QT_QPA_PLATFORM = "wayland";
+    ANKI_WAYLAND = "1";
     GDK_BACKEND = "wayland";
-    GDK_SCALE = "1";
     NIXOS_OZONE_WL = "1";
+  };
+  environment.variables = {
+    GDK_SCALE = "1";
     EDITOR = "nvim";
     VISUAL = "nvim";
     TERMINAL = "alacritty";
