@@ -1,0 +1,165 @@
+* {
+  font-family: "JetBrains Mono Nerd Font", "Noto Sans CJK JP";
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+  color: #c0caf5; /* TokyoNight foreground */
+}
+
+window#waybar {
+  background: rgba(0, 0, 0, 0.95); /* Pure black background */
+  color: #c0caf5; /* TokyoNight foreground */
+  border: 1px solid #15161e; /* TokyoNight dark border */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+#workspaces {
+  background: rgba(0, 0, 0, 0.4); /* Pure black with transparency */
+  margin: 4px 4px;
+  padding: 0 8px;
+  border: 1px solid #15161e; /* TokyoNight black border */
+}
+
+#workspaces button {
+  padding: 4px 12px;
+  color: #565f89; /* TokyoNight comment */
+  background: transparent;
+  transition: all 0.2s ease;
+  font-weight: bold;
+  border: 1px solid transparent;
+}
+
+#workspaces button.active {
+  color: #bb9af7; /* TokyoNight purple */
+  background: rgba(187, 154, 247, 0.1);
+  border: 1px solid #bb9af7;
+}
+
+#workspaces button:hover {
+  color: #7aa2f7; /* TokyoNight blue */
+  background: rgba(122, 162, 247, 0.1);
+}
+
+#window {
+  color: #808080;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 8px;
+  margin: 4px;
+  border: 1px solid #15161e;
+  min-width: 24px;
+}
+
+#clock {
+  color: #bb9af7;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px 16px;
+  margin: 4px;
+  font-weight: bold;
+  border: 1px solid #414868;
+}
+
+#cpu,
+#memory,
+#bluetooth,
+#battery,
+#network,
+#pulseaudio {
+  color: #9ece6a;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 12px;
+  margin: 4px 2px;
+  border: 1px solid #15161e;
+}
+
+#cpu {
+  color: #7aa2f7;
+}
+
+#memory {
+  color: #bb9af7;
+}
+
+#bluetooth {
+  color: #7dcfff; /* TokyoNight cyan for Bluetooth */
+}
+
+#bluetooth.disabled,
+#bluetooth.off {
+  color: #565f89; /* TokyoNight comment for disabled */
+  background: rgba(86, 95, 137, 0.1);
+}
+
+#cpu.warning,
+#memory.warning {
+  color: #e0af68; /* TokyoNight yellow */
+  background: rgba(224, 175, 104, 0.1);
+}
+
+#cpu.critical,
+#memory.critical {
+  color: #f7768e; /* TokyoNight red */
+  background: rgba(247, 118, 142, 0.1);
+  animation: blink 1s ease-in-out infinite alternate;
+}
+
+#battery.warning {
+  color: #e0af68; /* TokyoNight yellow */
+  background: rgba(224, 175, 104, 0.1);
+}
+
+#battery.critical {
+  color: #f7768e; /* TokyoNight red */
+  background: rgba(247, 118, 142, 0.1);
+  animation: blink 1s ease-in-out infinite alternate;
+}
+
+#network.disconnected {
+  color: #f7768e; /* TokyoNight red */
+  background: rgba(247, 118, 142, 0.1);
+}
+
+#pulseaudio.muted {
+  color: #565f89; /* TokyoNight comment */
+  background: rgba(86, 95, 137, 0.1);
+}
+
+#tray {
+  background: rgba(0, 0, 0, 0.3); /* Pure black with transparency */
+  padding: 4px 8px;
+  margin: 4px;
+  border: 1px solid #15161e;
+}
+
+@keyframes blink {
+  to {
+    background-color: rgba(247, 118, 142, 0.3);
+    color: #ffffff;
+  }
+}
+
+tooltip {
+  background: rgba(0, 0, 0, 0.95); /* Pure black background */
+  color: #c0caf5; /* TokyoNight foreground */
+  border: 1px solid #bb9af7; /* TokyoNight purple border */
+  border-radius: 0;
+  font-family: "JetBrains Mono Nerd Font";
+}
+
+#workspaces button.urgent {
+  color: #f7768e; /* TokyoNight red */
+  background: rgba(247, 118, 142, 0.2);
+  border: 1px solid #f7768e;
+}
+
+#cpu:hover,
+#memory:hover,
+#bluetooth:hover,
+#battery:hover,
+#network:hover,
+#pulseaudio:hover,
+#clock:hover {
+  border: 1px solid #bb9af7;
+  background: rgba(187, 154, 247, 0.05);
+}
