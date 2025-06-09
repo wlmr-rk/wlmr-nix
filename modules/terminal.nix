@@ -14,24 +14,16 @@ let
     #!/bin/bash
     
     pkill -f "wl-paste.*clipboard-monitor" || true
-    
-    # Store last clipboard content to avoid duplicate notifications
     CLIP_HISTORY_FILE="$HOME/.cache/clipboard_history"
-    
-    # Ensure cache directory exists
     mkdir -p "$(dirname "$CLIP_HISTORY_FILE")"
-    
-    # Function to get clipboard content hash for comparison
     get_clip_hash() {
         wl-paste 2>/dev/null | sha256sum | cut -d' ' -f1 2>/dev/null || echo ""
     }
-    
     show_notification() {
         local content="$1"
         local content_type="$2"
         local preview
         
-        # Truncate long content for preview
         if [ ''${#content} -gt 100 ]; then
             preview="''${content:0:97}..."
         else
@@ -50,14 +42,9 @@ let
                 ;;
         esac
     }
-    
-    # Export functions so they're available to subshells
     export -f get_clip_hash
     export -f show_notification
-    
-    # Monitor clipboard changes
     wl-paste --watch bash -c '
-        # Re-source the functions in this subshell context
         get_clip_hash() {
             wl-paste 2>/dev/null | sha256sum | cut -d'"'"' '"'"' -f1 2>/dev/null || echo ""
         }
@@ -164,7 +151,6 @@ let
         nohup ${clipboardMonitorScript} >/dev/null 2>&1 & disown
     end
     
-    # Auto-completion enhancements
     if command -v gh >/dev/null
         gh completion -s fish | source
     end
@@ -312,7 +298,6 @@ in
       };
     };
 
-    # Enhanced Starship prompt
     programs.starship = {
       enable = true;
       settings = {

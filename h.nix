@@ -28,6 +28,7 @@ in
     homeDirectory = "/home/wlmr";
     stateVersion = "25.11";
     packages = with pkgs; [
+      android-studio
       nixpkgs-fmt
       nix
       statix
@@ -56,5 +57,4 @@ in
     functions = config.fishContributions.functions // developmentConfig.fishFunctions;
     inherit (config.fishContributions) shellAliases shellInit;
   };
-
 }

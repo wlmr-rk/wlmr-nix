@@ -20,6 +20,8 @@
     };
   };
 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -88,6 +90,22 @@
     neovim
     git
     rustlings
+    jq
+    google-chrome
+
+    # Add these for Rust GUI development
+    wayland
+    wayland-protocols
+    libxkbcommon
+    libGL
+    pkg-config
+    deno
+
+    # X11 fallback support
+    xorg.libX11
+    xorg.libXcursor
+    xorg.libXrandr
+    xorg.libXi
 
     # System utilities (consolidated) 
     busybox # Replaces: curl, wget, unzip (includes 300+ utilities)
@@ -136,6 +154,9 @@
     ANKI_WAYLAND = "1";
     GDK_BACKEND = "wayland";
     NIXOS_OZONE_WL = "1";
+
+    WAYLAND_DISPLAY = "wayland-1";
+    XDG_SESSION_TYPE = "wayland";
   };
   environment.variables = {
     GDK_SCALE = "1";
