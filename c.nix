@@ -80,7 +80,6 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.android_sdk.accept_license = true; # Android Studio
 
   environment.systemPackages = with pkgs; [
     # Development essentials (consolidated)
@@ -91,7 +90,6 @@
     git
     rustlings
     jq
-    google-chrome
 
     # Add these for Rust GUI development
     wayland
@@ -99,7 +97,6 @@
     libxkbcommon
     libGL
     pkg-config
-    deno
 
     # X11 fallback support
     xorg.libX11
@@ -123,6 +120,15 @@
     bibata-cursors
     btop
   ];
+
+  # /etc/nixos/configuration.nix
+
+  networking.firewall = {
+    enable = true;
+    # Corrected option: TCP is all uppercase
+    allowedTCPPorts = [ 3000 ];
+  };
+
 
   fonts.packages = with pkgs; [
     noto-fonts

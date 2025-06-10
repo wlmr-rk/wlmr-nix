@@ -28,7 +28,6 @@ in
     homeDirectory = "/home/wlmr";
     stateVersion = "25.11";
     packages = with pkgs; [
-      android-studio
       nixpkgs-fmt
       nix
       statix
