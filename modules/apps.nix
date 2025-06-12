@@ -58,6 +58,7 @@
       esac
     '')
     firefox
+    google-chrome
     nautilus
     mpv
     imv
