@@ -96,7 +96,6 @@
     wayland-protocols
     libxkbcommon
     libGL
-    pkg-config
 
     # X11 fallback support
     xorg.libX11
@@ -107,6 +106,7 @@
     # System utilities (consolidated) 
     busybox # Replaces: curl, wget, unzip (includes 300+ utilities)
     pkg-config # Essential for building
+
 
     # Hardware/Graphics
     qt6.qtwayland

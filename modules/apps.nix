@@ -59,6 +59,7 @@
     '')
     firefox
     google-chrome
+    nodePackages_latest.vercel
     nautilus
     mpv
     imv
