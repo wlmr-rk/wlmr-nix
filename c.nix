@@ -1,6 +1,6 @@
 # configuration.nix
 
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
     <nixos-hardware/common/gpu/amd/default.nix>
@@ -26,7 +26,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.kernelModules = [ "amdgpu" ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages;
   boot.kernelParams = [ "amdgpu.sg_display=0" "amdgpu.dc=1" ];
 
   networking.hostName = "nixos"; # Define your hostname.
@@ -85,11 +85,26 @@
     # Development essentials (consolidated)
     stdenv.cc # Includes clang, gcc, and essential build tools
     nodejs_latest # Keep for your React/JS work
+    nodejs_24
     lua-language-server
     neovim
     git
     rustlings
+    gemini-cli
+    tesseract
+    python3
+    chromium
+    chromedriver
+    python3Packages.pip
+    python313Packages.selenium
+    python3Packages.setuptools
+    geckodriver
     jq
+    zoom-us
+    openssl
+    openssl.dev
+    pkg-config
+    remnote
 
     # Add these for Rust GUI development
     wayland

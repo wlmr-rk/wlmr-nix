@@ -2,19 +2,6 @@
 { pkgs, lib, config, ... }:
 let
   developmentConfig = import /home/wlmr/NixOS/modules/development.nix { inherit pkgs lib; };
-
-  shadps4-local = pkgs.appimageTools.wrapType2 {
-    pname = "shadps4";
-    version = "0.9A";
-    src = /home/wlmr/Downloads/shadps4plus.AppImage;
-
-    extraPkgs = pkgs: with pkgs; [
-      vulkan-loader
-      libGL
-      alsa-lib
-      libpulseaudio
-    ];
-  };
 in
 {
   imports = [
@@ -34,7 +21,6 @@ in
       deadnix
 
       bitwarden-cli
-      shadps4-local
 
       pavucontrol
       networkmanagerapplet
